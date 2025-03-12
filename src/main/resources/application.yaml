@@ -1,0 +1,7 @@
+contacts:
+  profile: init
+  storage:
+    #  файл для загрузки
+    loaderFileName: default-contacts.txt
+    #  файл для выгрузки
+    saverFileName: /save-contacts.txt
