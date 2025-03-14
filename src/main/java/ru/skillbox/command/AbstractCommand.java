@@ -1,15 +1,14 @@
 package ru.skillbox.command;
 
-import ru.skillbox.MainProvider;
-import ru.skillbox.servises.CommandService;
+import ru.skillbox.services.CommandService;
 
-public abstract class AbstractCommand {
+public abstract class AbstractCommand implements Command {
 
-    private CommandService messageService;
+//    private List<String> params; // список параметров к текущей команде
+    CommandService commandService; // сервис-слой между командой и интерфейсом
 
-    public AbstractCommand(MainProvider provider) {
-        this.provider = provider;
+    public AbstractCommand(CommandService commandService) {
+        this.commandService = commandService;
     }
 
-    public abstract void execute();
 }

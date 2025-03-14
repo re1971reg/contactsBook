@@ -2,15 +2,14 @@ package ru.skillbox.command;
 
 import ru.skillbox.services.CommandService;
 
-public class ListCommand extends AbstractCommand {
+public class ExitCommand extends AbstractCommand {
 
-    public ListCommand(CommandService commandService) {
+    public ExitCommand(CommandService commandService) {
         super(commandService);
     }
 
     @Override
     public void execute(String[] params) {
-        commandService.showAllContacts();
+        commandService.exitProgramm();
     }
-
 }

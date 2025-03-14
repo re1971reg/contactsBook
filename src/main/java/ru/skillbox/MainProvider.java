@@ -5,7 +5,9 @@ import ru.skillbox.command.CommandContainer;
 import ru.skillbox.config.ProviderProperties;
 import ru.skillbox.model.Contact;
 import ru.skillbox.model.ContactList;
-import ru.skillbox.servises.CommandServiceImpl;
+import ru.skillbox.services.CommandServiceImpl;
+import ru.skillbox.services.OutputService;
+import ru.skillbox.services.ShellOutputService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,28 +23,35 @@ public class MainProvider {
     private ProviderProperties properties;
     private ContactList contactList;
     private final CommandContainer commandContainer;
+    private final OutputService outputService;
+    private boolean nextLoop = true;
 
     public MainProvider(ProviderProperties properties, ContactList contactList) {
         System.out.println("create MainProvider");
         this.properties = properties;
         this.contactList = contactList;
         this.commandContainer = new CommandContainer(new CommandServiceImpl(this));
-        System.out.println(MessageFormat.format("MainProvider created with properties: {0}", properties));
+        this.outputService = new ShellOutputService();
+        outputService.println(MessageFormat.format("MainProvider created with properties: {0}", properties));
+    }
+
+    public void setNextLoop(boolean value) {
+        nextLoop = value;
     }
 
     public void run() {
-        System.out.println("Приложение запущено. Укажите команду.\nКоманда для выхода: exit; список команд: help;");
+        outputService.println("Приложение запущено. Укажите команду.");
+        //outputService.println("Команда для выхода: exit; список команд: help;");
         if (properties.getProfile().equalsIgnoreCase("init")) {
             loadContactsFromFile();
         }
-        while (true) {
-            System.out.print("> ");
+        while (nextLoop) {
+            outputService.print("> ");
             String inputCode = new Scanner(System.in).nextLine();
 
-            if (inputCode.equalsIgnoreCase("exit")) {
-                break;
-            }
-            parseInputCode(inputCode);
+            String[] params = inputCode.split(" ");
+            String commandName = params[0].toLowerCase();
+            commandContainer.getCommand(commandName).execute(params);
         }
     }
 
@@ -64,19 +73,31 @@ public class MainProvider {
                     break;
                 }
                 addContact(line);
-                System.out.println(line);
+                outputService.println(line);
             }
         } catch (IOException e) {
-            System.out.println(
+            outputService.println(
                 MessageFormat.format("Exception occurred during reading the file: {0}\n{1}", properties.getLoaderFileName(), e.getMessage())
             );
 
         }
     }
 
+    public void output(String string) {
+        outputService.println(string);
+    }
+
     private void addContact(String line) {
         String[] row = line.split(";");
-        Contact contact = new Contact.Builder().name(row[0]).phone(row[1]).email(row[2]).build();
+        Contact contact = new Contact.Builder()
+            .name(row[0])
+            .phone(row[1])
+            .email(row[2])
+            .build();
         contactList.putItem(contact);
+    }
+
+    public ContactList getContactList() {
+        return contactList;
     }
 }
