@@ -19,8 +19,8 @@ public class CommandContainer {
         commandMap.put(HELP.getCommandName(), new HelpCommand(commandService)); //+
         commandMap.put(EXIT.getCommandName(), new ExitCommand(commandService)); //+
         commandMap.put(LIST.getCommandName(), new ListCommand(commandService)); //+
-        commandMap.put(ADD.getCommandName(), new AddCommand(commandService)); //
-        commandMap.put(REMOVE.getCommandName(), new RemoveCommand(commandService)); //
+        commandMap.put(ADD.getCommandName(), new AddCommand(commandService)); //+
+        commandMap.put(REMOVE.getCommandName(), new RemoveCommand(commandService)); //+
         commandMap.put(SAVE.getCommandName(), new SaveCommand(commandService)); //
         commandMap.put(PROFILE.getCommandName(), new ProfileCommand(commandService)); //
         commandMap.put(LOAD.getCommandName(), new LoadCommand(commandService)); //

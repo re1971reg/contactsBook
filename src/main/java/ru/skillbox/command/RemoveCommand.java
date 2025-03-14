@@ -1,5 +1,6 @@
 package ru.skillbox.command;
 
+import ru.skillbox.exceptions.AddCommandException;
 import ru.skillbox.services.CommandService;
 
 import java.util.List;
@@ -14,7 +15,14 @@ public class RemoveCommand extends AbstractCommand {
 
     @Override
     public void execute(List<String> params) {
-        commandService.showText(OUTPUT_INFO);
+        validateInputInfo(params);
+        commandService.removeContact(params.get(1));
+    }
+
+    private void validateInputInfo(List<String> params) throws AddCommandException {
+        if (params.size() < 2) {
+            throw new AddCommandException("Укажите email");
+        }
     }
 
 }

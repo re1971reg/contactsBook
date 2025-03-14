@@ -5,6 +5,7 @@ import ru.skillbox.exceptions.AddCommandException;
 import ru.skillbox.model.Contact;
 
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Map;
 
 public class CommandServiceImpl implements CommandService {
@@ -25,17 +26,16 @@ public class CommandServiceImpl implements CommandService {
         mainProvider.setNextLoop(false);
     }
 
-    private Map<String, Contact> getContactsMap() {
-        return mainProvider.getContactList().getContacts();
-    }
-
     @Override
     public void showAllContacts() {
-        Map<String, Contact> contacts = getContactsMap();
-        if (contacts.isEmpty()) {
+        int count = mainProvider.getContactList().getCount();
+        if (count == 0) {
             mainProvider.output("Список контактов пустой.");
             return;
         }
+
+        Map<String, Contact> contacts = mainProvider.getContactList().getContacts();
+
         contacts.forEach((key, value) -> {
                 StringBuilder sb = new StringBuilder()
                     .append(value.getName()).append("|")
@@ -48,17 +48,26 @@ public class CommandServiceImpl implements CommandService {
 
     @Override
     public void addContact(Contact contact) {
-        Map<String, Contact> contacts = getContactsMap();
-        if (contacts.containsKey(contact.getEmail())) {
+        if (mainProvider.getContactList().contactExists(contact.getEmail())) {
             throw new AddCommandException(
                 MessageFormat.format("Контакт с email {0} уже существует", contact.getEmail())
             );
         }
-        contacts.put(contact.getEmail(), contact);
+        mainProvider.getContactList().putItem(contact);
+        mainProvider.output("Контакт добавлен");
     }
 
     @Override
     public String getInputLine() {
         return mainProvider.getInputLine();
+    }
+
+    @Override
+    public void removeContact(String email) {
+        if (!mainProvider.getContactList().contactExists(email)) {
+            throw new AddCommandException(MessageFormat.format("Контакт с email <{0}> отсутствует", email));
+        }
+        mainProvider.getContactList().removeItem(email);
+        mainProvider.output("Контакт удалён");
     }
 }

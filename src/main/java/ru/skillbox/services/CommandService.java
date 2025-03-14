@@ -16,6 +16,8 @@ public interface CommandService {
 
     String getInputLine();
 
+    void removeContact(String email);
+
 //    void getError();
 
 }

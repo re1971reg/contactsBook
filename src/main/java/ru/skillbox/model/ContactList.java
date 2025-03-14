@@ -26,6 +26,14 @@ public class ContactList {
         contacts.remove(email.toLowerCase());
     }
 
+    public int getCount() {
+        return contacts.size();
+    }
+
+    public boolean contactExists(String email) {
+        return contacts.containsKey(email.toLowerCase());
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("ContactList={");
@@ -33,4 +41,5 @@ public class ContactList {
         sb.append('}');
         return sb.toString();
     }
+
 }
