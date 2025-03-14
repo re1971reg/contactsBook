@@ -1,5 +1,6 @@
 package ru.skillbox;
 
+import org.springframework.lang.Contract;
 import org.springframework.stereotype.Component;
 import ru.skillbox.command.CommandContainer;
 import ru.skillbox.config.ProviderProperties;
@@ -8,6 +9,7 @@ import ru.skillbox.model.ContactList;
 import ru.skillbox.services.CommandServiceImpl;
 import ru.skillbox.services.OutputService;
 import ru.skillbox.services.ShellOutputService;
+import ru.skillbox.utils.ContactUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Scanner;
 
 @Component
@@ -25,6 +28,7 @@ public class MainProvider {
     private final CommandContainer commandContainer;
     private final OutputService outputService;
     private boolean nextLoop = true;
+    private String inputLine;
 
     public MainProvider(ProviderProperties properties, ContactList contactList) {
         System.out.println("create MainProvider");
@@ -47,11 +51,14 @@ public class MainProvider {
         }
         while (nextLoop) {
             outputService.print("> ");
-            String inputCode = new Scanner(System.in).nextLine();
-
-            String[] params = inputCode.split(" ");
-            String commandName = params[0].toLowerCase();
-            commandContainer.getCommand(commandName).execute(params);
+            inputLine = new Scanner(System.in).nextLine();
+            List<String> params = ContactUtils.getParamArray(inputLine);
+            String commandName = ContactUtils.getCommandName(params);
+            try {
+                commandContainer.getCommand(commandName).execute(params);
+            } catch (Exception e) {
+                outputService.println(e.getMessage());
+            }
         }
     }
 
@@ -99,5 +106,9 @@ public class MainProvider {
 
     public ContactList getContactList() {
         return contactList;
+    }
+
+    public String getInputLine() {
+        return inputLine;
     }
 }

@@ -4,5 +4,6 @@ import java.util.List;
 
 public interface Command {
 
-    void execute(String[] params);
+    void execute(List<String> params);
+
 }

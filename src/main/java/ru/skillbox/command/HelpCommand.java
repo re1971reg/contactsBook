@@ -2,6 +2,8 @@ package ru.skillbox.command;
 
 import ru.skillbox.services.CommandService;
 
+import java.util.List;
+
 import static ru.skillbox.command.CommandName.*;
 
 public class HelpCommand extends AbstractCommand {
@@ -29,7 +31,7 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] params) {
+    public void execute(List<String> params) {
         commandService.showText(OUTPUT_INFO);
     }
 }

@@ -1,5 +1,7 @@
 package ru.skillbox.services;
 
+import ru.skillbox.model.Contact;
+
 public interface CommandService {
 
     //void sendMessage(SendMessage message);
@@ -9,5 +11,11 @@ public interface CommandService {
     void exitProgramm();
 
     void showAllContacts();
+
+    void addContact(Contact contact);
+
+    String getInputLine();
+
+//    void getError();
 
 }

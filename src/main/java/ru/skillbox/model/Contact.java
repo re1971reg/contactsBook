@@ -1,12 +1,27 @@
 package ru.skillbox.model;
 
+import ru.skillbox.exceptions.AddCommandException;
+
 public class Contact {
 
     private String name;
     private String phone;
     private String email;
 
-    public Contact(Builder builder) {
+    public Contact(Builder builder) throws AddCommandException {
+        StringBuilder error = new StringBuilder("");
+        if (builder.name.isBlank()) {
+            error.append("Не указано имя для контакта\n");
+        }
+        if (builder.phone.isBlank()) {
+            error.append("Не указан телефон контакта\n");
+        }
+        if (builder.email.isBlank()) {
+            error.append("Не указан email контакта\n");
+        }
+        if (error.length() > 0) {
+            throw new AddCommandException(error.toString());
+        }
         this.name = builder.name;
         this.phone = builder.phone;
         this.email = builder.email;

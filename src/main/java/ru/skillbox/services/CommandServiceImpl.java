@@ -1,9 +1,10 @@
 package ru.skillbox.services;
 
 import ru.skillbox.MainProvider;
+import ru.skillbox.exceptions.AddCommandException;
 import ru.skillbox.model.Contact;
-import ru.skillbox.model.ContactList;
 
+import java.text.MessageFormat;
 import java.util.Map;
 
 public class CommandServiceImpl implements CommandService {
@@ -24,9 +25,13 @@ public class CommandServiceImpl implements CommandService {
         mainProvider.setNextLoop(false);
     }
 
+    private Map<String, Contact> getContactsMap() {
+        return mainProvider.getContactList().getContacts();
+    }
+
     @Override
     public void showAllContacts() {
-        Map<String, Contact> contacts = mainProvider.getContactList().getContacts();
+        Map<String, Contact> contacts = getContactsMap();
         if (contacts.isEmpty()) {
             mainProvider.output("Список контактов пустой.");
             return;
@@ -39,5 +44,21 @@ public class CommandServiceImpl implements CommandService {
                 mainProvider.output(sb.toString());
             }
         );
+    }
+
+    @Override
+    public void addContact(Contact contact) {
+        Map<String, Contact> contacts = getContactsMap();
+        if (contacts.containsKey(contact.getEmail())) {
+            throw new AddCommandException(
+                MessageFormat.format("Контакт с email {0} уже существует", contact.getEmail())
+            );
+        }
+        contacts.put(contact.getEmail(), contact);
+    }
+
+    @Override
+    public String getInputLine() {
+        return mainProvider.getInputLine();
     }
 }

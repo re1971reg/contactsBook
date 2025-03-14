@@ -2,6 +2,8 @@ package ru.skillbox.command;
 
 import ru.skillbox.services.CommandService;
 
+import java.util.List;
+
 public class ExitCommand extends AbstractCommand {
 
     public ExitCommand(CommandService commandService) {
@@ -9,7 +11,7 @@ public class ExitCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] params) {
+    public void execute(List<String> params) {
         commandService.exitProgramm();
     }
 }
